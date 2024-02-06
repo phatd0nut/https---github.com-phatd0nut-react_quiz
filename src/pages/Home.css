@@ -1,0 +1,13 @@
+.content {
+    display: flex;
+    justify-content:space-evenly;
+    flex-direction: column-reverse;
+}
+
+.settings {
+   display: flex;
+   flex-direction: row;
+   align-items: center;
+   padding: 10px;
+   font-weight: 500;
+}
