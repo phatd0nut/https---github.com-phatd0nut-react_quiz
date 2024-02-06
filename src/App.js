@@ -6,12 +6,19 @@ import Quiz from './pages/Quiz.js';
 import Result from './pages/Result.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
+import axios from 'axios';
 
 function App() {
   const [name, setName] = useState("");
-  const fetchQuestions = () => {
-    console.log('fetching questions');
+  const [questions, setQuestions] = useState()
+  const [score, setScore] = useState(0)
+
+  const fetchQuestions = async (category = '', difficulty = '') => {
+    const { data } = await axios.get(`https://opentdb.com/api.php?amount=10&${category && `category=${category}`}&${difficulty && `difficulty=${difficulty}`}&type=multiple`);
+    console.log(data);
   }
+
+ 
 
   return (
     <BrowserRouter>
