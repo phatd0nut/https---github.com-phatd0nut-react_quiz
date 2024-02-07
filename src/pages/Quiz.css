@@ -1,0 +1,22 @@
+.quiz {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Signika', sans-serif;
+    color: #FFFFFF;
+}
+
+.subtitle {
+    font-size: 2rem;
+    padding: 5px 10px;
+} 
+
+.quizInfo {
+    width: 94.5%;
+    display: flex;
+    justify-content: space-between;
+    text-transform: uppercase;
+    margin: 10px;
+    padding: 20px;
+    border: #FFFFFF 1px solid;
+}
