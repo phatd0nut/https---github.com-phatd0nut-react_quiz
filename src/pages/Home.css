@@ -46,7 +46,8 @@
         padding: 0;
         padding-top: 20px;
     }
-    /* .settings_select{
-       order: -1;
-    } */
+}
+
+.inputField {
+    color: #FFFFFF !important;
 }

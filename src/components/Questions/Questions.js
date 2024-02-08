@@ -1,16 +1,23 @@
 import { useState } from 'react';
 import ErrorMessage from '../ErrorMessage/ErrorMessage';
 import './Questions.css';
+import { Button } from '@material-ui/core';
+import { ThemeProvider } from '@material-ui/core';
+import { useNavigate } from 'react-router-dom';
+
+
+
+
 
 const Questions = ({
     currentQuestion,
     setCurrentQuestion,
     questions,
-    setQuestions,
     options,
     correct,
     score,
-    setScore
+    setScore,
+    theme
 }) => {
     const [selected, setSelected] = useState();
     const [error, setError] = useState(false);
@@ -31,7 +38,23 @@ const Questions = ({
             setScore(score + 1);
         }
         setError(false);
-    }
+    };
+
+    const navigation = useNavigate();
+
+    const handleNext = () => {
+        if (currentQuestion > 8) {
+            navigation('/result')
+        } else if (selected) {
+            setCurrentQuestion(currentQuestion + 1);
+            setSelected();
+        } else {
+            setError('Please select an option first');
+        }
+    };
+
+    const handleQuit = () => {};
+
 
 
     return (
@@ -52,9 +75,31 @@ const Questions = ({
 
 
                             >{i}</button>
-                        )
-                        ))
+                        )))
                     }
+                </div>
+                <div className='controls'>
+                    <ThemeProvider theme={theme}>
+                        <Button
+                            variant='contained'
+                            color='secondary'
+                            size='large'
+                            style={{ width: 260 }}
+                            href='/'
+                            onClick={handleQuit}
+                        >Quit
+
+                        </Button>
+
+                        <Button
+                            variant='contained'
+                            color='primary'
+                            size='large'
+                            style={{ width: 260 }}
+                            onClick={handleNext}
+                        >Next
+                        </Button>
+                    </ThemeProvider>
                 </div>
             </div>
         </div>

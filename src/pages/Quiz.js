@@ -3,7 +3,7 @@ import { CircularProgress } from '@material-ui/core';
 import './Quiz.css';
 import Questions from '../components/Questions/Questions';
 
-const Quiz = ({ name, score, questions, setQuestions, setScore }) => {
+const Quiz = ({ name, score, questions, setQuestions, setScore, theme }) => {
 
     const [options, setOptions] = useState()
     const [currentQuestion, setCurrentQuestion] = useState(0)
@@ -13,7 +13,7 @@ const Quiz = ({ name, score, questions, setQuestions, setScore }) => {
 
         setOptions(questions && handleShuffle([questions[currentQuestion]?.correct_answer, ...questions[currentQuestion]?.incorrect_answers]))
 
-    }, [questions]);
+    }, [questions, currentQuestion]);
 
     console.log(options);
 
@@ -36,11 +36,11 @@ const Quiz = ({ name, score, questions, setQuestions, setScore }) => {
                     currentQuestion={currentQuestion}
                     setCurrentQuestion={setCurrentQuestion}
                     questions={questions}
-                    setQuestions={setQuestions}
                     options={options}
                     correct={questions[currentQuestion]?.correct_answer}
                     score={score}
-                    setScore={setScore} />
+                    setScore={setScore}
+                    theme={theme} />
                 </>
             ) : (
                 <CircularProgress

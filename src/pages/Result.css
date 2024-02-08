@@ -1,0 +1,33 @@
+.result {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 60vh;
+}
+
+.scoreTxt {
+    font-size: 5.5rem;
+    color: #FFFFFF;
+    font-weight: 500;
+    font-family: 'Protest Riot';
+    padding-bottom: 20px;
+
+}
+
+.playAgain {
+    width: 500px;
+    align-self: center;
+    
+}
+
+@media (max-width: 768px) {
+  .playAgain
+    {
+        width: 275px;
+    }
+
+    .scoreTxt {
+        font-size: 3rem;
+    }
+}
