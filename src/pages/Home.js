@@ -81,7 +81,7 @@ const Home = ({ name, setName, fetchQuestions, theme }) => {
                     </ThemeProvider>
                 </div>
 
-                <img src='/quiz.png' className='banner' alt='Quiz bulb' />
+                <img src='/quizbirdie.png' className='banner' alt='Quiz birdie' />
             </div>
         </>
     )
