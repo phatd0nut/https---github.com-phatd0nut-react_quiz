@@ -84,3 +84,11 @@
     color: white;
     box-shadow: 0 0 1px black;
   }
+
+  .progressBar {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #FFFFFF;
+    width: 94.5%;
+    border: rgba(93, 157, 213, 0.219) 1px solid;
+}
