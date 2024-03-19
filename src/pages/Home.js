@@ -32,6 +32,8 @@ const Home = ({ name, setName, fetchQuestions, theme }) => {
                     <ThemeProvider theme={theme}>
                         <div className='settings_select'>
                             {error && <ErrorMessage>Please fill in the boxes.</ErrorMessage>}
+
+                            
                             <TextField
                                 style={{ marginBottom: 15 }}
                                 label='Enter your name'
