@@ -15,9 +15,36 @@ function App() {
   const [score, setScore] = useState(0)
 
   const fetchQuestions = async (category = '', difficulty = '') => {
-    const { data } = await axios.get(`https://opentdb.com/api.php?amount=10&${category && `category=${category}`}&${difficulty && `difficulty=${difficulty}`}&type=multiple`);
-    
-    setQuestions(data.results);
+
+    try {
+      const { data } = await axios.get('http://localhost:3001/api/questions', {
+        params: {
+          category: category,
+          difficulty: difficulty
+        }
+      });
+      setQuestions(data);
+    } catch (error) {
+      console.error('Failed to fetch questions:', error);
+    }
+
+    // const { data } = await axios.get(`https://opentdb.com/api.php?amount=10&${category && `category=${category}`}&${difficulty && `difficulty=${difficulty}`}&type=multiple`);
+
+    // setQuestions(data.results);
+  }
+
+  const startQuiz = async (category, difficulty) => {
+    try {
+      const response = await axios.post('http://localhost:3001/api/start-quiz', {
+        name: name,
+        category: category,
+        difficulty: difficulty,
+        score: score
+      });
+      // Hantera svaret
+    } catch (error) {
+      console.error('Failed to start quiz:', error);
+    }
   }
 
   const theme = createTheme({
@@ -47,17 +74,17 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-      <div className="app" style={{ backgroundImage: 'url(./soft_clouds.jpg)' }}>
-        <Header className="app-header" />
+        <div className="app" style={{ backgroundImage: 'url(./soft_clouds.jpg)' }}>
+          <Header className="app-header" />
 
-        <Routes>
-          <Route path="/" element={<Home name={name} setName={setName} fetchQuestions={fetchQuestions} theme={theme} />} />
-          <Route path="/quiz" element={<Quiz name={name} questions={questions} setQuestions={setQuestions} score={score} setScore={setScore} theme={theme} />} />
-          <Route path="/result" element={<Result name={name} score={score} theme={theme}/>} />
-        </Routes>
+          <Routes>
+            <Route path="/" element={<Home name={name} setName={setName} startQuiz={startQuiz} fetchQuestions={fetchQuestions} theme={theme} />} />
+            <Route path="/quiz" element={<Quiz name={name} questions={questions} setQuestions={setQuestions} score={score} setScore={setScore} theme={theme} />} />
+            <Route path="/result" element={<Result name={name} score={score} theme={theme} />} />
+          </Routes>
 
-      </div>
-      <Footer />
+        </div>
+        <Footer />
       </ThemeProvider>
     </BrowserRouter>
   );

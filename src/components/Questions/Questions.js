@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import ErrorMessage from '../ErrorMessage/ErrorMessage';
+import ErrorMessage from '../ErrorMessage/ErrorMessage.js';
 import './Questions.css';
 import { Button } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/core';
@@ -20,6 +20,8 @@ const Questions = ({
     time,
     setTime
 }) => {
+    console.log(questions);
+    console.log(currentQuestion);
     const [selected, setSelected] = useState();
     const [error, setError] = useState(false);
 
