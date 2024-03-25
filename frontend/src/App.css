@@ -20,5 +20,5 @@ a {
   margin: 5px;
   padding: 5px;
   border-radius: 10px;
-
+  background-image: url('../public/soft_clouds.jpg');
 }

@@ -4,6 +4,7 @@ import Footer from './components/Footer/Footer.js';
 import Home from './pages/Home.js';
 import Quiz from './pages/Quiz.js';
 import Result from './pages/Result.js';
+import JoinQuiz from './pages/JoinQuiz.js';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
 import axios from 'axios';
@@ -11,8 +12,10 @@ import { createTheme, ThemeProvider } from '@material-ui/core';
 
 function App() {
   const [name, setName] = useState("");
-  const [questions, setQuestions] = useState()
-  const [score, setScore] = useState(0)
+  const [questions, setQuestions] = useState();
+  const [score, setScore] = useState(0);
+  const [uuid, setUuid] = useState("");
+  const [userId, setUserId] = useState("");
 
   const theme = createTheme({
     palette: {
@@ -41,13 +44,14 @@ function App() {
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
-        <div className="app" style={{ backgroundImage: 'url(./soft_clouds.jpg)' }}>
+        <div className="app">
           <Header className="app-header" />
 
           <Routes>
-            <Route path="/" element={<Home name={name} setName={setName} setQuestions={setQuestions} theme={theme} />} />
+            <Route path="/" element={<Home name={name} setName={setName} setQuestions={setQuestions} setUuid={setUuid} setUserId={setUserId} theme={theme} />} />
             <Route path="/quiz" element={<Quiz name={name} questions={questions} setQuestions={setQuestions} score={score} setScore={setScore} theme={theme} />} />
-            <Route path="/result" element={<Result name={name} score={score} theme={theme} />} />
+            <Route path="/join/:sessionId" element={<JoinQuiz setName={setName} setQuestions={setQuestions} setUuid={setUuid} setUserId={setUserId} />} />
+            <Route path="/result" element={<Result name={name} score={score} uuid={uuid} userId={userId} theme={theme} />} />
           </Routes>
 
         </div>

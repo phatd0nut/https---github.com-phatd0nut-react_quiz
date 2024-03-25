@@ -1,0 +1,11 @@
+#joinQuiz {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 55vh;
+}
+
+#joinQuiz_inputName {
+    color: #FFFFFF !important;
+}

@@ -4,6 +4,7 @@
     align-items: center;
     font-family: 'Signika', sans-serif;
     color: #FFFFFF;
+    z-index: 1;
 }
 
 .subtitle {

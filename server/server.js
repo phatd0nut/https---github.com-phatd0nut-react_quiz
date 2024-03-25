@@ -63,8 +63,13 @@ app.post('/api/start-quiz', async (req, res) => {
     [uuid, category, difficulty, JSON.stringify(data.results), userId]
   );
 
- // Send the UUID, the questions, and the invite URL as the response
- res.json({ uuid, questions: data.results, inviteUrl });
+  // Send back the UUID, user ID and questions
+  res.json({
+    uuid,
+    userId,
+    questions: data.results,
+    inviteUrl
+  });
 });
 
 app.listen(3001, () => {
@@ -73,4 +78,52 @@ app.listen(3001, () => {
 
 app.post('/api/set-session', (req, res) => {
   res.send('Session set');
+});
+
+app.post('/api/join-quiz/:sessionId', async (req, res) => {
+  const { name } = req.body;
+  const { sessionId } = req.params;
+
+  // Get the game settings from the database
+  const [gameSettingsRows] = await pool.execute(
+    'SELECT * FROM game_settings WHERE uuid = ?',
+    [sessionId]
+  );
+
+  if (gameSettingsRows.length === 0) {
+    res.status(404).json({ error: 'Game session not found' });
+    return;
+  }
+
+  const gameSettings = gameSettingsRows[0];
+
+  // Create a new user
+  const [userRows] = await pool.execute(
+    'INSERT INTO users (username) VALUES (?)',
+    [name]
+  );
+
+  const userId = userRows.insertId;
+
+  // Save the user ID in the game settings
+  await pool.execute(
+    'UPDATE game_settings SET user_id = ? WHERE uuid = ?',
+    [userId, sessionId]
+  );
+
+  // Send the questions, userId and uuid as the response
+  res.json({ questions: JSON.parse(gameSettings.questions), userId });
+});
+
+app.post('/api/save-score', async (req, res) => {
+  console.log(req.body);
+  const { uuid, user_id, score } = req.body;
+
+  // Insert the score into the scores table
+  await pool.execute(
+    'INSERT INTO scores (uuid, user_id, score) VALUES (?, ?, ?)',
+    [uuid, user_id, score]
+  );
+
+  res.json({ message: 'Score saved successfully.' });
 });

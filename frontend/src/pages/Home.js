@@ -8,14 +8,13 @@ import { ThemeProvider } from '@material-ui/core';
 import Modal from 'react-modal';
 Modal.setAppElement('#root');
 
-const Home = ({ name, setName, setQuestions, theme }) => {
+const Home = ({ name, setName, setQuestions, setUuid, setUserId, theme }) => {
     const [category, setCategory] = useState("");
     const [difficulty, setDifficulty] = useState("");
     const [error, setError] = useState(false);
     const navigate = useNavigate();
     const [inviteUrl, setInviteUrl] = useState('');
     const [modalIsOpen, setModalIsOpen] = useState(false);
-
 
     const startQuiz = async (category, difficulty) => {
         // Send a POST request to the server to start a new game session
@@ -33,8 +32,10 @@ const Home = ({ name, setName, setQuestions, theme }) => {
 
         const data = await response.json();
 
-        // Save the invite URL in the state
+        // Save the invite URL, uuid and userId in the state
         setInviteUrl(data.inviteUrl);
+        setUuid(data.uuid);
+        setUserId(data.userId);
 
         // Save the questions in the state
         setQuestions(data.questions);
