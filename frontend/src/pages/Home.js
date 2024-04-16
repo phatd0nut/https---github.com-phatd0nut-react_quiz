@@ -6,17 +6,19 @@ import { useNavigate } from 'react-router-dom';
 import ErrorMessage from '../components/ErrorMessage/ErrorMessage.js';
 import { ThemeProvider } from '@material-ui/core';
 import Modal from 'react-modal';
+import { useContext } from 'react';
+import { QuizContext } from '../QuizContext.js';
 Modal.setAppElement('#root');
 
-const Home = ({ name, setName, setQuestions, setUuid, setUserId, theme }) => {
-    const [category, setCategory] = useState("");
-    const [difficulty, setDifficulty] = useState("");
+const Home = ({ name, setName, setQuestions, setUuid, setUserId, theme, setScore }) => {
     const [error, setError] = useState(false);
     const navigate = useNavigate();
     const [inviteUrl, setInviteUrl] = useState('');
     const [modalIsOpen, setModalIsOpen] = useState(false);
+    const { category, setCategory, difficulty, setDifficulty } = useContext(QuizContext);
 
     const startQuiz = async (category, difficulty) => {
+        setScore(0);
         // Send a POST request to the server to start a new game session
         const response = await fetch('http://localhost:3001/api/start-quiz', {
             method: 'POST',
@@ -40,6 +42,7 @@ const Home = ({ name, setName, setQuestions, setUuid, setUserId, theme }) => {
         // Save the questions in the state
         setQuestions(data.questions);
         setModalIsOpen(true);
+
     };
 
     const handleSubmit = () => {
@@ -50,6 +53,12 @@ const Home = ({ name, setName, setQuestions, setUuid, setUserId, theme }) => {
             setError(false);
             startQuiz(category, difficulty);
         }
+    };
+
+    const copyToClipboard = (e) => {
+        navigator.clipboard.writeText(inviteUrl);
+        e.target.focus();
+        alert('Invite link copied to clipboard!');
     };
 
     return (
@@ -115,21 +124,18 @@ const Home = ({ name, setName, setQuestions, setUuid, setUserId, theme }) => {
                     isOpen={modalIsOpen}
                     onRequestClose={() => setModalIsOpen(false)}
                     ariaHideApp={false}
+                    id='modal'
+                    shouldCloseOnOverlayClick={false}
                     style={{
-                        content: {
-                            width: '400px',
-                            height: '300px',
-                            margin: 'auto',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            justifyContent: 'center',
-                            alignItems: 'center',
+                        overlay: {
+                            pointerEvents: 'auto'
                         }
                     }}
                 >
+                    <button id="close-button" onClick={() => setModalIsOpen(false)}>X</button>
                     <h2>Invite a Friend</h2>
                     <p>Share this link to invite a friend to your quiz:</p>
-                    <p>{inviteUrl}</p>
+                    <p id='inviteUrl' onClick={copyToClipboard} style={{ cursor: 'pointer' }}>{inviteUrl}</p>
                     <Button variant='contained' color='primary' size='large' onClick={() => { setModalIsOpen(false); navigate('/quiz'); }}>Start Quiz</Button>
                 </Modal>
 

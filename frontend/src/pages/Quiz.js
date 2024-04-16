@@ -54,7 +54,7 @@ const Quiz = ({ name, score, questions, setScore, theme }) => {
         };
     }, [timer]);
 
-    console.log(questions);
+
     return (
         <div className='quiz'>
             <span className='subtitle'>Welcome {name}</span>

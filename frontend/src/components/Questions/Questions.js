@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import ErrorMessage from '../ErrorMessage/ErrorMessage.js';
 import './Questions.css';
 import { Button } from '@material-ui/core';
@@ -20,10 +20,24 @@ const Questions = ({
     time,
     setTime
 }) => {
-    console.log(questions);
-    console.log(currentQuestion);
     const [selected, setSelected] = useState();
     const [error, setError] = useState(false);
+    const selectedRef = useRef(); // Add this line
+    const timerRef = useRef(); // Add this line
+
+    useEffect(() => {
+        console.log(selectedRef.current);
+        if (!selectedRef.current && time > 0 && !timeOut && !timerRef.current) {
+            timerRef.current = setInterval(() => {
+                setTime(prevTime => prevTime - 1);
+            }, 1000);
+        } else {
+            clearInterval(timerRef.current);
+            timerRef.current = null;
+        }
+    
+        return () => clearInterval(timerRef.current);
+    }, [selectedRef.current, time, timeOut, currentQuestion]);
 
     const handleSelect = (i) => {
         if (selected === i && selected === correct) {
@@ -34,9 +48,10 @@ const Questions = ({
             return 'select';
         }
     };
-
     const handleCheck = (i) => {
+        selectedRef.current = i; // Update selectedRef.current directly
         setSelected(i);
+        clearInterval(timerRef.current);
         if (i === correct) {
             setScore(score + 1);
         }
@@ -48,23 +63,17 @@ const Questions = ({
     const handleNext = () => {
         if (currentQuestion > 8) {
             navigation('/result')
-        } else if (selected || timeOut) { // Add timeOut here
+        } else if (selected || timeOut) {
             setCurrentQuestion(currentQuestion + 1);
             setSelected();
-            setTimeOut(false); // Reset timeOut here
-            setTime(15); // Reset time here
+            setTimeOut(false);
+            setTime(15);
         } else {
             setError('Please select an option first');
         }
     };
 
     const handleQuit = () => { };
-
-    useEffect(() => {
-        console.log('time', time);
-        // This will run every time `time` changes
-    }, [time]);
-
 
 
     return (
@@ -73,11 +82,11 @@ const Questions = ({
             <LinearProgress
                 className='progressBar'
                 variant="determinate"
-                value={(time / 15) * 100}
+                value={(timeOut || selected) ? 0 : (time / 15) * 100}
                 style={{ backgroundColor: '#FFFFFF', height: '10px' }}
             />
             <div className='singleQuestion'>
-            <h2 className='questionTitle'>{questions[currentQuestion]?.question}</h2>
+                <h2 className='questionTitle'>{questions[currentQuestion]?.question}</h2>
                 <div className='options'>
                     {error && <ErrorMessage>{error}</ErrorMessage>}
                     {

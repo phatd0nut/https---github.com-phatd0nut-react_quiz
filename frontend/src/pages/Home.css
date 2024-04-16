@@ -1,53 +1,97 @@
 .content {
-    display: flex;
-    justify-content: space-around; 
+  display: flex;
+  justify-content: space-around;
 }
 
 .settings {
-   display: flex;
-   flex-direction: column;
-   align-items: center;
-   padding: 10px;
-   font-weight: 500;
-   font-size: 2.5rem;
-   color: #FFFFFF;
-   width: 45%;
-   text-align: center;
-   font-family: 'Signika', sans-serif;
-   
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  font-weight: 500;
+  font-size: 2.5rem;
+  color: #ffffff;
+  width: 45%;
+  text-align: center;
+  font-family: "Signika", sans-serif;
 }
 
 .banner {
-    width: 330px;
-    align-self: center;
-    padding: 8px;
+  width: 330px;
+  align-self: center;
+  padding: 8px;
 }
 
 .settings_select {
-    display: flex;
-    flex-direction: column;
-    padding: 40px;
-    width: 100%;
-    flex: 0.8;
-    justify-content: space-evenly;
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  width: 100%;
+  flex: 0.8;
+  justify-content: space-evenly;
+}
+
+#modal {
+  width: 50%;
+  height: 50%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+#modal h2 {
+  margin-bottom: 15px;
+}
+
+#inviteUrl {
+  margin-top: 15px;
+  background-color: rgba(93, 157, 213, 0.219);
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#inviteUrl:hover {
+  background-color: rgba(93, 157, 213, 0.5);
+  cursor: pointer;
+}
+
+#modal Button {
+  margin-top: 15px;
+}
+
+#close-button {
+  position: absolute;
+  left: 25px;
+  top: 10px;
+  background: none;
+  border: none;
+  font-size: 1.5em;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+#close-button:hover {
+  transform: scale(1.5);
 }
 
 @media (max-width: 768px) {
-    .content {
-        flex-direction: column-reverse;
-        align-items: center;
-    }
+  .content {
+    flex-direction: column-reverse;
+    align-items: center;
+  }
 
-    .settings {
-        width: 100%
-    }
-    .banner {
-        width: 200px;
-        padding: 0;
-        padding-top: 20px;
-    }
+  .settings {
+    width: 100%;
+  }
+  .banner {
+    width: 200px;
+    padding: 0;
+    padding-top: 20px;
+  }
 }
 
 .inputField {
-    color: #FFFFFF !important;
+  color: #ffffff !important;
 }

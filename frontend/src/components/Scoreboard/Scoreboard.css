@@ -1,0 +1,33 @@
+#scoreboard {
+    background-color: #FFFFFF;
+    width: 100%;
+    border-radius: 5px;
+    margin: 0 auto; /* Add this line */
+    border: #7094a4 2px solid;
+    margin-bottom: 20px;
+}
+
+#scoreboardInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#scoreboardInfo p {
+    margin-right: 10px;
+}
+
+#scoreboardH2 {
+    margin-top: 10px;
+    color: #7094a4;
+}
+
+ul {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+li {
+    list-style-type: none;
+}

@@ -9,6 +9,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import React, { useState } from 'react';
 import axios from 'axios';
 import { createTheme, ThemeProvider } from '@material-ui/core';
+import { QuizContext } from './QuizContext.js';
 
 function App() {
   const [name, setName] = useState("");
@@ -16,6 +17,8 @@ function App() {
   const [score, setScore] = useState(0);
   const [uuid, setUuid] = useState("");
   const [userId, setUserId] = useState("");
+  const [category, setCategory] = useState("");
+  const [difficulty, setDifficulty] = useState("");
 
   const theme = createTheme({
     palette: {
@@ -42,22 +45,24 @@ function App() {
   });
 
   return (
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        <div className="app">
-          <Header className="app-header" />
+    <QuizContext.Provider value={{ category, difficulty, setCategory, setDifficulty }}>
+      <BrowserRouter>
+        <ThemeProvider theme={theme}>
+          <div className="app">
+            <Header className="app-header" />
 
-          <Routes>
-            <Route path="/" element={<Home name={name} setName={setName} setQuestions={setQuestions} setUuid={setUuid} setUserId={setUserId} theme={theme} />} />
-            <Route path="/quiz" element={<Quiz name={name} questions={questions} setQuestions={setQuestions} score={score} setScore={setScore} theme={theme} />} />
-            <Route path="/join/:sessionId" element={<JoinQuiz setName={setName} setQuestions={setQuestions} setUuid={setUuid} setUserId={setUserId} />} />
-            <Route path="/result" element={<Result name={name} score={score} uuid={uuid} userId={userId} theme={theme} />} />
-          </Routes>
+            <Routes>
+              <Route path="/" element={<Home name={name} setName={setName} setQuestions={setQuestions} setUuid={setUuid} setUserId={setUserId} theme={theme} setScore={setScore} />} />
+              <Route path="/quiz" element={<Quiz name={name} questions={questions} setQuestions={setQuestions} score={score} setScore={setScore} theme={theme} />} />
+              <Route path="/join/:sessionId" element={<JoinQuiz setName={setName} setQuestions={setQuestions} setUuid={setUuid} setUserId={setUserId} setScore={setScore} />} />
+              <Route path="/result" element={<Result name={name} score={score} uuid={uuid} userId={userId} theme={theme} />} />
+            </Routes>
 
-        </div>
-        <Footer />
-      </ThemeProvider>
-    </BrowserRouter>
+          </div>
+          <Footer />
+        </ThemeProvider>
+      </BrowserRouter>
+    </QuizContext.Provider>
   );
 }
 

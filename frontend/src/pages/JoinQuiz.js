@@ -4,12 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import './JoinQuiz.css';
 
-const JoinQuiz = ({ setName, setQuestions, setUserId, setUuid }) => {
+const JoinQuiz = ({ setName, setQuestions, setUserId, setUuid, setScore }) => {
     const [username, setUsername] = useState("");
     const navigate = useNavigate();
     const { sessionId } = useParams();
 
     const joinQuiz = async () => {
+        setScore(0);
         try {
             const response = await axios.post(`/api/join-quiz/${sessionId}`, { name: username });
             setName(username);

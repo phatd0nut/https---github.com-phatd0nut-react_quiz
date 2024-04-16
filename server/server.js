@@ -26,8 +26,6 @@ const dbOptions = {
 };
 
 const pool = mysql.createPool(dbOptions);
-const MySQLStore = MySQLStoreFactory(session);
-const sessionStore = new MySQLStore({}, pool);
 
 pool.getConnection()
   .then(connection => {
@@ -41,6 +39,7 @@ pool.getConnection()
 app.post('/api/start-quiz', async (req, res) => {
   const { name, category, difficulty } = req.body;
 
+  
   // Make the API call to fetch the questions
   const { data } = await axios.get(`https://opentdb.com/api.php?amount=10&${category && `category=${category}`}&${difficulty && `difficulty=${difficulty}`}&type=multiple`);
 
@@ -117,13 +116,30 @@ app.post('/api/join-quiz/:sessionId', async (req, res) => {
 
 app.post('/api/save-score', async (req, res) => {
   console.log(req.body);
-  const { uuid, user_id, score } = req.body;
+  const { uuid, user_id, score, category, difficulty } = req.body;
 
   // Insert the score into the scores table
   await pool.execute(
-    'INSERT INTO scores (uuid, user_id, score) VALUES (?, ?, ?)',
-    [uuid, user_id, score]
+    'INSERT INTO scores (uuid, user_id, score, category, difficulty) VALUES (?, ?, ?, ?, ?)',
+    [uuid, user_id, score, category, difficulty]
   );
 
   res.json({ message: 'Score saved successfully.' });
+});
+
+app.get('/scoreboard/:category/:difficulty', async (req, res) => {
+  const { category, difficulty } = req.params;
+
+  console.log(`Category: ${category}, Difficulty: ${difficulty}`);
+
+  try {
+    const [topScores] = await pool.execute(
+      'SELECT scores.*, users.username FROM scores JOIN users ON scores.user_id = users.user_id WHERE scores.category = ? AND scores.difficulty = ? ORDER BY score DESC LIMIT 5',
+      [category, difficulty]
+    );
+    console.log(topScores);
+    res.json({ topScores });
+  } catch (error) {
+    console.error('There was an error!', error);
+  }
 });
