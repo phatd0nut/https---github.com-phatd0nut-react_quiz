@@ -26,7 +26,7 @@ cd backend
 npm install
 ```
 
-## Setting Up the Database
+### Setting Up the Database
 
 To set up the database, you will need to import the `react_quiz.sql` file into your MySQL server. You can do this by using a MySQL client like phpMyAdmin, or by using the command line:
 
