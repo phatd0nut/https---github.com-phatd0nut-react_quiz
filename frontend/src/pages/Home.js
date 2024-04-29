@@ -8,6 +8,7 @@ import { ThemeProvider } from '@material-ui/core';
 import Modal from 'react-modal';
 import { useContext } from 'react';
 import { QuizContext } from '../QuizContext.js';
+import he from 'he';
 Modal.setAppElement('#root');
 
 const Home = ({ name, setName, setQuestions, setUuid, setUserId, theme, setScore }) => {
@@ -33,6 +34,19 @@ const Home = ({ name, setName, setQuestions, setUuid, setUserId, theme, setScore
         }
 
         const data = await response.json();
+        // Decode the questions and answer options
+        if (data.questions) {
+            data.questions = data.questions.map(question => {
+                question.question = he.decode(question.question);
+                if (question.incorrect_answers) {
+                    question.incorrect_answers = question.incorrect_answers.map(answer => he.decode(answer));
+                }
+                if (question.correct_answer) {
+                    question.correct_answer = he.decode(question.correct_answer);
+                }
+                return question;
+            });
+        }
 
         // Save the invite URL, uuid and userId in the state
         setInviteUrl(data.inviteUrl);

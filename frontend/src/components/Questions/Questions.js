@@ -14,40 +14,55 @@ const Questions = ({
     correct,
     score,
     setScore,
+    setAnswered,
     theme,
-    timeOut,
-    setTimeOut,
-    time,
-    setTime
 }) => {
     const [selected, setSelected] = useState();
     const [error, setError] = useState(false);
-    const selectedRef = useRef(); // Add this line
-    const timerRef = useRef(); // Add this line
+    const [time, setTime] = useState(15); // Add this line
+    const [timeOut, setTimeOut] = useState(false); // Add this line
+    const selectedRef = useRef();
+    const timerRef = useRef();
+    const timeRef = useRef(time);
 
     useEffect(() => {
-        console.log(selectedRef.current);
-        if (!selectedRef.current && time > 0 && !timeOut && !timerRef.current) {
+        timeRef.current = time; // Add this line
+    }, [time]);
+
+    useEffect(() => {
+        if (time > 0 && !timeOut) {
             timerRef.current = setInterval(() => {
                 setTime(prevTime => prevTime - 1);
             }, 1000);
         } else {
             clearInterval(timerRef.current);
             timerRef.current = null;
+            if (!selected) {
+                setTimeout(() => {
+                    setSelected(correct);
+                    setTimeOut(true);
+                }, 1000);
+            }
         }
     
         return () => clearInterval(timerRef.current);
-    }, [selectedRef.current, time, timeOut, currentQuestion]);
+    }, [time, timeOut, correct, selected]);
+
+    useEffect(() => {
+        setTime(15);
+        setTimeOut(false);
+    }, [currentQuestion]);
 
     const handleSelect = (i) => {
         if (selected === i && selected === correct) {
-            return 'select';
+            return 'correct';
         } else if (selected === i && selected !== correct) {
             return 'wrong';
-        } else if (i === correct) {
-            return 'select';
+        } else if (i === correct && (timeOut || selected !== correct)) {
+            return 'correct';
         }
     };
+
     const handleCheck = (i) => {
         selectedRef.current = i; // Update selectedRef.current directly
         setSelected(i);
@@ -56,6 +71,7 @@ const Questions = ({
             setScore(score + 1);
         }
         setError(false);
+        setAnswered(true); // Add this line
     };
 
     const navigation = useNavigate();
@@ -68,6 +84,8 @@ const Questions = ({
             setSelected();
             setTimeOut(false);
             setTime(15);
+            setAnswered(false);
+            selectedRef.current = null;
         } else {
             setError('Please select an option first');
         }
@@ -90,18 +108,14 @@ const Questions = ({
                 <div className='options'>
                     {error && <ErrorMessage>{error}</ErrorMessage>}
                     {
-                        timeOut ? (
-                            <div>The correct answer was: {correct}</div>
-                        ) : (
-                            options && options.map((i => (
-                                <button
-                                    onClick={() => handleCheck(i)}
-                                    className={`singleOption ${selected && handleSelect(i)}`}
-                                    key={i}
-                                    disabled={selected}
-                                >{i}</button>
-                            )))
-                        )
+                        options && options.map((i => (
+                            <button
+                                onClick={() => handleCheck(i)}
+                                className={`singleOption ${selected && handleSelect(i)}`}
+                                key={i}
+                                disabled={selected}
+                            >{i}</button>
+                        )))
                     }
                 </div>
                 <div className='controls'>

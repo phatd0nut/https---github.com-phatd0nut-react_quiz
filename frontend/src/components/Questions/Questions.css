@@ -73,14 +73,14 @@
     justify-content: space-around;
   }
   
-  .select {
-    background-color: forestgreen;
+  .wrong {
+    background-color: #dc143c;
     color: white;
     box-shadow: 0 0 1px black;
   }
-  
-  .wrong {
-    background-color: #dc143c;
+
+  .correct {
+    background-color: forestgreen;
     color: white;
     box-shadow: 0 0 1px black;
   }

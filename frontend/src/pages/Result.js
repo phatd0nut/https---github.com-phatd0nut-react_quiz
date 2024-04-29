@@ -15,9 +15,6 @@ const Result = ({ name, score, uuid, userId, theme }) => {
   const [scoreboard, setScoreboard] = useState({ topScores: [] });
   const { category, difficulty } = useContext(QuizContext);
 
-  console.log(score);
-
-
   useEffect(() => {
     if (!name) {
       navigate('/');
@@ -33,9 +30,8 @@ const Result = ({ name, score, uuid, userId, theme }) => {
       difficulty: difficulty
     })
       .then(response => {
-        console.log(response.data);
         // Fetch the updated scoreboard
-        const url = `http://localhost:3000/scoreboard/${category}/${difficulty}`;
+        const url = `/scoreboard/${category}/${difficulty}`;
         fetch(url)
           .then(response => response.json())
           .then(data => {

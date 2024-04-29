@@ -6,6 +6,9 @@ import session from 'express-session';
 import MySQLStoreFactory from 'express-mysql-session';
 import mysql from 'mysql2/promise';
 import { v4 as uuidv4 } from 'uuid';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 
 const app = express();
 dotenv.config({ path: '../.env' }); // Läs in .env-filen
@@ -25,6 +28,13 @@ const dbOptions = {
   database: process.env.DB_DATABASE
 };
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Servera frontend
+app.use(express.static(path.join(__dirname, '../frontend/build')))
+
+
 const pool = mysql.createPool(dbOptions);
 
 pool.getConnection()
@@ -39,7 +49,7 @@ pool.getConnection()
 app.post('/api/start-quiz', async (req, res) => {
   const { name, category, difficulty } = req.body;
 
-  
+
   // Make the API call to fetch the questions
   const { data } = await axios.get(`https://opentdb.com/api.php?amount=10&${category && `category=${category}`}&${difficulty && `difficulty=${difficulty}`}&type=multiple`);
 
@@ -54,7 +64,7 @@ app.post('/api/start-quiz', async (req, res) => {
   const uuid = uuidv4();
 
   // Generate an invite URL for the game
-  const inviteUrl = `http://localhost:3000/join/${uuid}`;
+  const inviteUrl = `http://localhost:3001/join/${uuid}`;
 
   // Save the game settings in the database
   await pool.execute(
@@ -71,6 +81,10 @@ app.post('/api/start-quiz', async (req, res) => {
   });
 });
 
+app.get('/join/:uuid', (req, res) => {
+  res.sendFile(path.join(__dirname, '../frontend/build/index.html'));
+});
+
 app.listen(3001, () => {
   console.log('Server is running on port 3001');
 });
@@ -84,34 +98,44 @@ app.post('/api/join-quiz/:sessionId', async (req, res) => {
   const { sessionId } = req.params;
 
   // Get the game settings from the database
-  const [gameSettingsRows] = await pool.execute(
-    'SELECT * FROM game_settings WHERE uuid = ?',
-    [sessionId]
-  );
+  try {
+    const [gameSettingsRows] = await pool.execute(
+      'SELECT * FROM game_settings WHERE uuid = ?',
+      [sessionId]
+    );
 
-  if (gameSettingsRows.length === 0) {
-    res.status(404).json({ error: 'Game session not found' });
-    return;
+    if (gameSettingsRows.length === 0) {
+      res.status(404).json({ error: 'Game session not found' });
+      return;
+    }
+
+    const gameSettings = gameSettingsRows[0];
+
+    // Create a new user
+    const [userRows] = await pool.execute(
+      'INSERT INTO users (username) VALUES (?)',
+      [name]
+    );
+
+    const userId = userRows.insertId;
+
+    // Save the user ID in the game settings
+    await pool.execute(
+      'UPDATE game_settings SET user_id = ? WHERE uuid = ?',
+      [userId, sessionId]
+    );
+
+    // Send the questions, userId, uuid, category, and difficulty as the response
+    res.json({
+      questions: JSON.parse(gameSettings.questions),
+      userId,
+      category: gameSettings.category,
+      difficulty: gameSettings.difficulty
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'An error occurred while joining the quiz' });
   }
-
-  const gameSettings = gameSettingsRows[0];
-
-  // Create a new user
-  const [userRows] = await pool.execute(
-    'INSERT INTO users (username) VALUES (?)',
-    [name]
-  );
-
-  const userId = userRows.insertId;
-
-  // Save the user ID in the game settings
-  await pool.execute(
-    'UPDATE game_settings SET user_id = ? WHERE uuid = ?',
-    [userId, sessionId]
-  );
-
-  // Send the questions, userId and uuid as the response
-  res.json({ questions: JSON.parse(gameSettings.questions), userId });
 });
 
 app.post('/api/save-score', async (req, res) => {
