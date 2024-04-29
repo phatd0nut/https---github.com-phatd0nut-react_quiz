@@ -17,7 +17,7 @@ cd frontend
 npm install
 ```
 
-#### Backend (Express.js)
+### Backend (Express.js)
 
 Navigate to the backend directory and run the following command to install dependencies:
 
@@ -26,7 +26,7 @@ cd backend
 npm install
 ```
 
-##### Starting the Application
+### Starting the Application
 
 To start the application, run the following command in the server directory:
 
@@ -36,7 +36,7 @@ npm start
 
 This will initiate the application via the server. Open your browser and go to http://localhost:3001 to see the application in action.
 
-## Author
+# Author
 
 This project was created by [Enor Zilkiqi](https://github.com/phatd0nut).
 
